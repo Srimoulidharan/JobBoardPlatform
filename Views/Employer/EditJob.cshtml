@@ -1,0 +1,35 @@
+﻿@model JobBoardPlatform.Models.JobPost
+
+@{
+    ViewData["Title"] = "Edit Job Post";
+}
+
+<h2>Edit Job Post</h2>
+
+<form asp-action="EditJob" method="post">
+    <input type="hidden" asp-for="Id" />
+
+    <div class="form-group">
+        <label asp-for="Title"></label>
+        <input asp-for="Title" class="form-control" />
+    </div>
+
+    <div class="form-group">
+        <label asp-for="Description"></label>
+        <textarea asp-for="Description" class="form-control"></textarea>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="Location"></label>
+        <input asp-for="Location" class="form-control" />
+    </div>
+
+    <div class="form-group">
+        <label asp-for="ExpiryDate"></label>
+        <input asp-for="ExpiryDate" type="date" class="form-control" />
+    </div>
+
+    <br />
+    <button type="submit" class="btn btn-success">Update</button>
+    <a asp-action="Home" class="btn btn-secondary">Cancel</a>
+</form>

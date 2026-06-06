@@ -1,0 +1,60 @@
+@model IEnumerable<JobBoardPlatform.Models.JobPost>
+
+@{
+    ViewData["Title"] = "Employer Home";
+}
+@{
+    var userName = Context.Session.GetString("UserName") ?? "Employer";
+}
+<h2>Welcome, @userName</h2>
+<p>You can post new jobs and manage your listings here.</p>
+
+@if (TempData["Success"] != null)
+{
+    <div class="alert alert-success">@TempData["Success"]</div>
+}
+@if (TempData["Error"] != null)
+{
+    <div class="alert alert-danger">@TempData["Error"]</div>
+}
+
+<a class="btn btn-primary mb-3" asp-controller="Employer" asp-action="CreateJob">Post a Job</a>
+
+@if (!Model.Any())
+{
+    <p>No jobs posted yet.</p>
+}
+else
+{
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Title</th>
+                <th>Location</th>
+                <th>Posted</th>
+                <th>Expires</th>
+                <th>Status</th>
+                <th>Active</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var job in Model)
+            {
+                <tr>
+                    <td>@job.Title</td>
+                    <td>@job.Location</td>
+                    <td>@job.PostedDate.ToShortDateString()</td>
+                    <td>@job.ExpiryDate?.ToShortDateString()</td>
+                    <td>@job.Status</td>
+                    <td>@(job.IsActive ? "Yes" : "No")</td>
+                    <td>
+                        <a class="btn btn-sm btn-primary" asp-action="EditJob" asp-route-id="@job.Id">Edit</a>
+                        <a class="btn btn-sm btn-danger" asp-action="DeleteJob" asp-route-id="@job.Id">Delete</a>
+                        <a class="btn btn-info btn-sm" asp-action="ViewApplicants" asp-route-id="@job.Id">Applicants</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}

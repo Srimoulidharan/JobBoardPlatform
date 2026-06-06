@@ -1,0 +1,64 @@
+@{
+    ViewData["Title"] = "Login";
+}
+<style>
+    .login-container {
+        min-height: 90vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .login-card {
+        background: white;
+        padding: 40px;
+        border-radius: 10px;
+        box-shadow: 0 8px 16px rgba(0,0,0,0.2);
+        width: 100%;
+        max-width: 400px;
+    }
+
+        .login-card h2 {
+            margin-bottom: 25px;
+            font-weight: bold;
+        }
+
+        .login-card .form-control {
+            margin-bottom: 15px;
+        }
+</style>
+<div class="login-container">
+    <div class="login-card">
+        <h2 class="text-center text-primary">Login</h2>
+        @if (TempData["Success"] != null)
+        {
+            <div class="alert alert-success">@TempData["Success"]</div>
+        }
+        <form asp-action="Login" method="post">
+            <label>Email</label>
+            <input name="email" type="email" class="form-control" required />
+            <label>Password</label>
+            <input name="password" type="password" class="form-control" required />
+            <button type="submit" class="btn btn-primary w-100 mt-3">Login</button>
+        </form>
+
+        @if (ViewBag.Error != null)
+        {
+            <div class="alert alert-warning mt-2">
+                @ViewBag.Error
+                @if (ViewBag.Error.ToString().Contains("not been activated") || ViewBag.Error.ToString().Contains("deactivated"))
+                {
+                    <br />
+                    <a href="mailto:srimoulidharan.hosting@gmail.com?subject=Account Activation Support" class="btn btn-link mt-2 p-0">Contact Support</a>
+                }
+            </div>
+        }
+
+        <div class="text-center mt-4">
+            <p>
+                Don't have an account?
+                <a asp-controller="Account" asp-action="Register">Register here</a>
+            </p>
+        </div>
+    </div>
+</div>

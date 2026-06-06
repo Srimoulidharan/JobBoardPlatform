@@ -1,0 +1,78 @@
+@model JobBoardPlatform.Models.JobPost
+
+@{
+    ViewData["Title"] = "View Applicants";
+}
+
+<h2>Applicants for @Model.Title</h2>
+
+@if (TempData["Success"] != null)
+{
+    <div class="alert alert-success">@TempData["Success"]</div>
+}
+@if (TempData["Error"] != null)
+{
+    <div class="alert alert-danger">@TempData["Error"]</div>
+}
+
+@if (Model.Applications == null || !Model.Applications.Any())
+{
+    <p>No applications received yet.</p>
+}
+else
+{
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th>Applicant Name</th>
+                <th>Message</th>
+                <th>Applied Date</th>
+                <th>Resume</th>
+                <th>Status</th>
+                <th>Update Status</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var app in Model.Applications)
+            {
+                <tr>
+                    <td>@app.User?.FullName</td>
+                    <td>@app.Message</td>
+                    <td>@app.AppliedDate.ToString("dd-MM-yyyy")</td>
+                    <td>
+                        @if (!string.IsNullOrEmpty(app.ResumeFilePath))
+                        {
+                            <a href="@app.ResumeFilePath" target="_blank" class="btn btn-sm btn-outline-primary">
+                                Download Resume
+                            </a>
+                        }
+                        else
+                        {
+                            <span class="text-muted">No resume</span>
+                        }
+                    </td>
+                    <td>@app.Status</td>
+                    <td>
+                        <form asp-action="UpdateApplicationStatus" method="post" class="form-inline">
+                            <input type="hidden" name="applicationId" value="@app.Id" />
+                            <select name="status" class="form-select form-select-sm d-inline w-auto me-1">
+                                @foreach (var status in new[] { "Pending", "Shortlisted", "Hired", "Rejected" })
+                                {
+                                    if (app.Status == status)
+                                    {
+                                        <option value="@status" selected>@status</option>
+                                    }
+                                    else
+                                    {
+                                        <option value="@status">@status</option>
+                                    }
+                                }
+                            </select>
+                            <button type="submit" class="btn btn-sm btn-success">Update</button>
+                        </form>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}

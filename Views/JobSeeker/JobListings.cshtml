@@ -1,0 +1,61 @@
+@model IEnumerable<JobBoardPlatform.Models.JobPost>
+
+@{
+    ViewData["Title"] = "Job Listings";
+}
+
+<h2>Available Jobs</h2>
+
+@if (TempData["Success"] != null)
+{
+    <div class="alert alert-success">@TempData["Success"]</div>
+}
+@if (TempData["Error"] != null)
+{
+    <div class="alert alert-danger">@TempData["Error"]</div>
+}
+
+<form method="get" asp-action="JobListings" class="row mb-4">
+    <div class="col-md-4">
+        <input type="text" name="searchTitle" value="@ViewBag.SearchTitle" class="form-control" placeholder="Search by Title" />
+    </div>
+    <div class="col-md-4">
+        <input type="text" name="searchLocation" value="@ViewBag.SearchLocation" class="form-control" placeholder="Search by Location" />
+    </div>
+    <div class="col-md-4">
+        <button type="submit" class="btn btn-primary">Search</button>
+    </div>
+</form>
+
+@if (!Model.Any())
+{
+    <p>No approved active jobs found matching your search.</p>
+}
+else
+{
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th>Title</th>
+                <th>Location</th>
+                <th>Posted On</th>
+                <th>Employer</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var job in Model)
+            {
+                <tr>
+                    <td>@job.Title</td>
+                    <td>@job.Location</td>
+                    <td>@job.PostedDate.ToShortDateString()</td>
+                    <td>@job.Employer?.FullName</td>
+                    <td>
+                        <a class="btn btn-success btn-sm" asp-action="ApplyForm" asp-controller="JobSeeker" asp-route-jobId="@job.Id">Apply</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}

@@ -1,0 +1,37 @@
+﻿@model IEnumerable<JobBoardPlatform.Models.Application>
+
+<h2>My Applications</h2>
+
+@if (!Model.Any())
+{
+    <p>You haven't applied for any jobs yet.</p>
+}
+else
+{
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th>Job Title</th>
+                <th>Applied On</th>
+                <th>Status</th>
+                <th>Resume</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var app in Model)
+            {
+                <tr>
+                    <td>@app.JobPost.Title</td>
+                    <td>@app.AppliedDate.ToShortDateString()</td>
+                    <td>@app.Status</td>
+                    <td>
+                        @if (!string.IsNullOrEmpty(app.ResumeFilePath))
+                        {
+                            <a href="@Url.Content(app.ResumeFilePath)" target="_blank">Download</a>
+                        }
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}

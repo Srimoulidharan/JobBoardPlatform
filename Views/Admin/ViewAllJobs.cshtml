@@ -1,0 +1,95 @@
+@model List<JobBoardPlatform.Models.JobPost>
+@{
+    ViewData["Title"] = "All Job Posts";
+    var statusOptions = ViewBag.StatusOptions as List<string> ?? new List<string>();
+    var selectedStatus = ViewBag.SelectedStatus as string;
+}
+
+<h2>All Job Posts</h2>
+
+@if (TempData["Success"] != null)
+{
+    <div class="alert alert-success">@TempData["Success"]</div>
+}
+@if (TempData["Error"] != null)
+{
+    <div class="alert alert-danger">@TempData["Error"]</div>
+}
+
+<form method="get" class="mb-3">
+    <label>Status Filter:</label>
+    <select name="status" onchange="this.form.submit()" class="form-select w-auto d-inline-block">
+        <option value="">-- All --</option>
+        @foreach (var status in statusOptions)
+        {
+            <option value="@status" selected="@(status == selectedStatus)">@status</option>
+        }
+    </select>
+</form>
+
+@if (!Model.Any())
+{
+    <p>No jobs found.</p>
+}
+else
+{
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th>Title</th>
+                <th>Employer</th>
+                <th>Location</th>
+                <th>Posted Date</th>
+                <th>Status</th>
+                <th>Active</th>
+                <th>Review</th>
+                <th>Visibility</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var job in Model)
+            {
+                <tr>
+                    <td>@job.Title</td>
+                    <td>@job.Employer?.FullName</td>
+                    <td>@job.Location</td>
+                    <td>@job.PostedDate.ToShortDateString()</td>
+                    <td>@job.Status</td>
+                    <td>@(job.IsActive ? "Active" : "Inactive")</td>
+                    <td>
+                        @if (job.Status == "Pending")
+                        {
+                            <form asp-action="UpdateJobStatus" method="post" class="d-inline">
+                                <input type="hidden" name="id" value="@job.Id" />
+                                <input type="hidden" name="status" value="Approved" />
+                                <button type="submit" class="btn btn-sm btn-success">Approve</button>
+                            </form>
+                            <form asp-action="UpdateJobStatus" method="post" class="d-inline">
+                                <input type="hidden" name="id" value="@job.Id" />
+                                <input type="hidden" name="status" value="Rejected" />
+                                <button type="submit" class="btn btn-sm btn-danger">Reject</button>
+                            </form>
+                        }
+                        else
+                        {
+                            <span class="text-muted">Reviewed</span>
+                        }
+                    </td>
+                    <td>
+                        <form method="post" asp-action="ToggleJobActive" asp-controller="Admin" class="d-inline">
+                            <input type="hidden" name="jobId" value="@job.Id" />
+                            @if (job.IsActive)
+                            {
+                                <button type="submit" class="btn btn-warning btn-sm">Deactivate</button>
+                            }
+                            else
+                            {
+                                <button type="submit" class="btn btn-secondary btn-sm">Activate</button>
+                            }
+                        </form>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}

@@ -1,0 +1,39 @@
+@model JobBoardPlatform.Models.Application
+
+@{
+    ViewData["Title"] = "Apply for Job";
+}
+
+<h2 class="mb-4">Apply for @ViewBag.JobTitle</h2>
+
+@if (TempData["Success"] != null)
+{
+    <div class="alert alert-success">@TempData["Success"]</div>
+}
+@if (TempData["Error"] != null)
+{
+    <div class="alert alert-danger">@TempData["Error"]</div>
+}
+
+<form asp-action="ApplyForm" method="post" enctype="multipart/form-data">
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+    <input type="hidden" asp-for="JobPostId" />
+
+    <div class="mb-3">
+        <label asp-for="Message" class="form-label">Why are you suitable for this role?</label>
+        <textarea asp-for="Message" class="form-control" rows="4" required></textarea>
+        <span asp-validation-for="Message" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label">Upload Resume (PDF or DOCX)</label>
+        <input type="file" name="resumeFile" accept=".pdf,.doc,.docx" class="form-control" required />
+        <span class="text-danger">@Html.ValidationMessage("resumeFile")</span>
+    </div>
+
+    <button type="submit" class="btn btn-primary">Submit Application</button>
+</form>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

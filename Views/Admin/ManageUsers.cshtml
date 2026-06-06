@@ -1,0 +1,97 @@
+﻿@model IEnumerable<JobBoardPlatform.Models.User>
+@{
+    ViewData["Title"] = "Manage Users";
+    var roles = new List<string> { "Admin", "Employer", "JobSeeker" };
+    var currentUserId = Context.Session.GetInt32("UserId");
+}
+<h2>Manage Users</h2>
+@if (TempData["Success"] != null)
+{
+    <div class="alert alert-success">@TempData["Success"]</div>
+}
+@if (TempData["Error"] != null)
+{
+    <div class="alert alert-danger">@TempData["Error"]</div>
+}
+<table class="table table-bordered">
+    <thead>
+        <tr>
+            <th>Full Name</th>
+            <th>Email</th>
+            <th>Role</th>
+            <th>Actions</th>
+            <th>Status</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var user in Model)
+        {
+            <tr>
+                <td>@user.FullName</td>
+                <td>@user.Email</td>
+                <td>
+                    @if (user.Id == currentUserId)
+                    {
+                        <!-- Prevent role change for current admin -->
+                        <span class="badge bg-secondary">@user.Role</span>
+                    }
+                    else
+                    {
+                        <form asp-action="UpdateUserRole" asp-controller="Admin" method="post" class="d-flex">
+                            <input type="hidden" name="userId" value="@user.Id" />
+                            <select name="newRole" class="form-select me-2">
+                                @foreach (var role in roles)
+                                {
+                                    <option value="@role" selected="@(user.Role == role ? "selected" : null)">
+                                        @role
+                                    </option>
+                                }
+                            </select>
+                            <button type="submit" class="btn btn-sm btn-primary">Update</button>
+                        </form>
+                    }
+                </td>
+                <td>
+                    @if (user.Id == currentUserId)
+                    {
+                        <!-- Prevent deleting current admin -->
+                        <span class="text-muted">N/A</span>
+                    }
+                    else
+                    {
+                        <form asp-action="DeleteUser" asp-controller="Admin" method="post">
+                            <input type="hidden" name="id" value="@user.Id" />
+                            <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Delete this user?')">Delete</button>
+                        </form>
+                    }
+                </td>
+                <td>
+                    @if (user.Id == currentUserId)
+                    {
+                        <!-- Prevent self deactivation -->
+                        <span class="badge bg-success">Active</span>
+                    }
+                    else
+                    {
+                        if (user.IsActive)
+                        {
+                            <form asp-action="ToggleUserStatus" asp-controller="Admin" method="post">
+                                <input type="hidden" name="id" value="@user.Id" />
+                                <input type="hidden" name="makeActive" value="false" />
+                                <button type="submit" class="btn btn-warning btn-sm">Deactivate</button>
+                            </form>
+                        }
+                        else
+                        {
+                            <form asp-action="ToggleUserStatus" asp-controller="Admin" method="post">
+                                <input type="hidden" name="id" value="@user.Id" />
+                                <input type="hidden" name="makeActive" value="true" />
+                                <button type="submit" class="btn btn-success btn-sm">Activate</button>
+                            </form>
+                        }
+                    }
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

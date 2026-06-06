@@ -1,0 +1,45 @@
+@model JobBoardPlatform.Models.User
+
+@{
+    ViewData["Title"] = "Edit Profile";
+}
+
+<h2>Edit Profile</h2>
+
+@if (TempData["Success"] != null)
+{
+    <div class="alert alert-success">@TempData["Success"]</div>
+}
+
+<form asp-action="Edit" method="post" enctype="multipart/form-data" class="mt-4">
+    <div class="form-group mb-3">
+        <label asp-for="FullName" class="form-label"></label>
+        <input asp-for="FullName" class="form-control" />
+        <span asp-validation-for="FullName" class="text-danger"></span>
+    </div>
+
+    <div class="form-group mb-3">
+        <label asp-for="Email" class="form-label"></label>
+        <input asp-for="Email" class="form-control" readonly />
+    </div>
+
+    <div class="form-group mb-3">
+        <label class="form-label">Profile Picture</label><br />
+        @if (!string.IsNullOrEmpty(Model.ProfilePicture))
+        {
+            <img src="@Url.Content(Model.ProfilePicture)" alt="Profile Picture" class="img-thumbnail mb-2" style="max-height: 150px;" />
+        }
+        <input type="file" name="profileImage" accept=".jpg,.jpeg,.png,.gif,.webp" class="form-control" />
+    </div>
+
+    <div class="form-group mb-3">
+        <label asp-for="Role" class="form-label"></label>
+        <input asp-for="Role" class="form-control" readonly />
+    </div>
+
+    <button type="submit" class="btn btn-primary">Save Changes</button>
+</form>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

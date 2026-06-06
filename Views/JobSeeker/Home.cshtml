@@ -1,0 +1,134 @@
+﻿@* @{
+    ViewData["Title"] = "Job Seeker Home";
+    var jobs = ViewBag.RecentJobs as List<JobBoardPlatform.Models.JobPost>;
+}
+
+<h2>Welcome, @ViewBag.UserName!</h2>
+<p>Find your next opportunity here.</p>
+
+<p>
+    <a href="@Url.Action("JobListings", "JobSeeker")" class="btn btn-primary btn-lg">
+        Browse Jobs
+    </a>
+</p>
+<div class="mt-4">
+    <h4>Recent Job Openings</h4>
+    @if (jobs != null && jobs.Any())
+    {
+        <ul>
+            @foreach (var job in jobs)
+            {
+                <li>
+                    <a href="@Url.Action("Details", "Jobs", new { id = job.Id })">
+                        @job.Title 
+                    </a>
+                    <small class="text-muted">(@job.PostedDate.ToString("MMM dd, yyyy"))</small>
+                </li>
+            }
+        </ul>
+    }
+    else
+    {
+        <p>No recent jobs found.</p>
+    }
+</div> *@
+@{
+    ViewData["Title"] = "Job Seeker Home";
+    var jobs = ViewBag.RecentJobs as List<JobBoardPlatform.Models.JobPost>;
+}
+<style>
+    .home-container {
+        max-width: 600px;
+        margin: 60px auto 0 auto;
+        background: #fff;
+        border-radius: 14px;
+        box-shadow: 0 8px 32px rgba(60, 60, 110, 0.13);
+        padding: 32px 40px;
+    }
+
+    .welcome-title {
+        margin-top: 0;
+        margin-bottom: 14px;
+        font-weight: 700;
+        color: #1b254b;
+        font-size: 2.1rem;
+    }
+
+    .btn-primary {
+        font-size: 1.1rem;
+        padding: 8px 32px;
+        border-radius: 7px;
+        margin-bottom: 18px;
+        background: #2563eb;
+        border: none;
+    }
+
+    .recent-jobs-list {
+        padding-left: 0;
+        list-style: none;
+    }
+
+        .recent-jobs-list li {
+            padding: 8px 0;
+            border-bottom: 1px solid #efefef;
+        }
+
+            .recent-jobs-list li:last-child {
+                border-bottom: none;
+            }
+
+    .job-link {
+        font-weight: 500;
+        color: #2563eb;
+        text-decoration: none;
+    }
+
+        .job-link:hover {
+            text-decoration: underline;
+        }
+
+    .job-date {
+        font-size: 0.95rem;
+        color: #888;
+        margin-left: 12px;
+    }
+
+    .sub-title {
+        font-weight: 600;
+        color: #333;
+        margin-bottom: 10px;
+        font-size: 1.3rem;
+    }
+</style>
+<div class="home-container">
+    <h2 class="welcome-title">
+        Welcome, @ViewBag.UserName!
+    </h2>
+    <p>Find your next opportunity here.</p>
+    <a href="@Url.Action("JobListings", "JobSeeker")" class="btn btn-primary">
+        Browse Jobs
+    </a>
+    <div class="mt-4">
+        <div class="sub-title">Recent Job Openings</div>
+        @if (jobs != null && jobs.Any())
+        {
+            <ul class="recent-jobs-list">
+                @foreach (var job in jobs)
+                {
+                    <li>
+                        <a href="@Url.Action("ApplyForm", "JobSeeker", new { jobId = job.Id })" class="job-link">
+                            @job.Title
+                        </a>
+                        <span class="job-date">
+                            (@job.PostedDate.ToString("MMM dd, yyyy"))
+                        </span>
+                    </li>
+                }
+            </ul>
+        }
+        else
+        {
+            <p>No recent jobs found.</p>
+        }
+    </div>
+</div>

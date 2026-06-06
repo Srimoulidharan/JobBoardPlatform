@@ -1,0 +1,24 @@
+﻿@model JobBoardPlatform.Models.JobPost
+
+@{
+    ViewData["Title"] = "Delete Job";
+}
+
+<h2>Delete Job</h2>
+
+<div class="alert alert-warning">
+    <strong>Are you sure you want to delete this job?</strong>
+</div>
+
+<div>
+    <h4>@Model.Title</h4>
+    <p>Location: @Model.Location</p>
+    <p>Posted: @Model.PostedDate.ToShortDateString()</p>
+    <p>Expires: @Model.ExpiryDate?.ToShortDateString()</p>
+</div>
+
+<form asp-action="DeleteJob" method="post">
+    <input type="hidden" asp-for="Id" />
+    <button type="submit" class="btn btn-danger">Yes, Delete</button>
+    <a asp-action="Home" class="btn btn-secondary">Cancel</a>
+</form>
